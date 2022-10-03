@@ -2,7 +2,7 @@ package com.course.java.shkal.lab1;
 
 import java.util.Scanner;
 
-class SecondClass {
+public class SecondTask {
 
     static Scanner scanner = new Scanner(System.in);
 
@@ -61,5 +61,4 @@ class SecondClass {
         System.out.println("Сторона квадрата A = " + A);
         System.out.println("Радиус описанной окружности квадрата R = " + R);
     }
-
 }
