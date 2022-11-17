@@ -1,7 +1,6 @@
 package com.course.java.shkal.lab3.realization;
 
 import com.course.java.shkal.lab3.entity.Employee;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class EmployeeJson {

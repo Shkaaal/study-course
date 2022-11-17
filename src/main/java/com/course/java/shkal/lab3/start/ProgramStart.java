@@ -16,6 +16,6 @@ public class ProgramStart {
 
         System.out.println("\n\nModel to Json:\n\n" + service.modelToJson(employee));
 
-        System.out.println("\n\nModel to Xml:\n\n" + service.modelToXml(employee));
+        System.out.println("\n\nModel to Xml:" + service.modelToXml(employee));
     }
 }
