@@ -11,6 +11,7 @@ public class Task {
 
         List<Integer> sortedList = list.stream().sorted().collect(Collectors.toList());
 
+        System.out.println("Исходный список:\n" + list);
         System.out.println("Число X = " + X);
         System.out.println("Полученный список:\n" + sortedList);
     }
