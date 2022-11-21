@@ -1,6 +1,9 @@
-package com.course.java.shkal.lab4.List.FirstTask;
+package com.course.java.shkal.lab4.FirstTask;
 
-public class ArrayList<T> {
+import java.util.Arrays;
+import java.util.Objects;
+
+public class ArrayList {
     private static final int DEFAULT_CAPACITY = 10;
     private Object[] elements;
     private int size;
@@ -14,22 +17,34 @@ public class ArrayList<T> {
         elements = new Object[capacity];
     }
 
-    public ArrayList(ArrayList<T> list) {
+    public ArrayList(ArrayList list) {
         elements = new Object[list.size];
         size = list.size;
         index = list.index;
-    }
 
-    @SafeVarargs
-    public ArrayList(T... values) {
-        for (int i = 0; i < values.length; i++) {
-            elements[i] = values[i];
+        for (int i = 0; i < size; i++) {
+            this.elements[i] = list.elements[i];
         }
     }
 
-    public boolean add(T t) {
-        if (elements.length == index) {
-            elements = new Object[size * 2];
+    public ArrayList(Integer... values) {
+        elements = new Object[values.length];
+        for (int i = 0; i < values.length; i++) {
+            elements[i] = values[i];
+            index++;
+        }
+        size = index;
+    }
+
+    public boolean add(Object t) {
+        if (elements.length  == index) {
+            Object[] temp = new Object[size * 2];
+
+            for (int i = 0; i < size; i++) {
+                temp[i] = elements[i];
+            }
+
+            elements = temp;
         }
 
         elements[index] = t;
@@ -42,12 +57,12 @@ public class ArrayList<T> {
         return size;
     }
 
-    public T get(int index) {
+    public Object get(int index) {
         indexCheck(index);
-        return (T) elements[index];
+        return (Object) elements[index];
     }
 
-    public int get(T t) {
+    public int get(Object t) {
         for (int i = 0; i < size; i++) {
             if (elements[i] == t)
                 return i;
@@ -80,16 +95,16 @@ public class ArrayList<T> {
         return true;
     }
 
-    public void set(int index, T value) {
+    public void set(int index, Object value) {
         indexCheck(index);
         elements[index] = value;
     }
 
-    public ArrayList<T> subList(int firstIndex, int lastIndex) {
+    public ArrayList subList(int firstIndex, int lastIndex) {
         indexCheck(firstIndex);
         indexCheck(lastIndex);
 
-        SubList<T> temp = new SubList<T>(this, 0, firstIndex, lastIndex);
+        SubList temp = new SubList(this, 0, firstIndex, lastIndex);
         return temp;
     }
 
@@ -100,21 +115,49 @@ public class ArrayList<T> {
         }
         return "List { " + result + "}";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ArrayList arrayList = (ArrayList) o;
+        if (size == arrayList.size) {
+            for (int i = 0; i < size; i++) {
+                if (!elements.equals(arrayList.elements)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(size);
+        result = 31 * result + Arrays.hashCode(elements);
+        return result;
+    }
 }
 
-
-class SubList<T> extends ArrayList<T> {
-    private ArrayList<T> parent;
+class SubList extends ArrayList {
+    Object[] elements;
+    private ArrayList parent;
     private int offset;
     int size;
 
-    SubList(ArrayList<T> parent, int offset, int fromIndex, int toIndex) {
+    SubList(ArrayList parent, int offset, int fromIndex, int toIndex) {
         this.parent = parent;
         this.offset = offset + fromIndex;
         this.size = toIndex - fromIndex;
+
+        elements = new Object[toIndex-fromIndex];
+        for (int i = fromIndex, k = 0; i < toIndex; i ++, k ++) {
+            elements[k] = parent.get(i);
+        }
     }
 
-    public T get(int index) {
+    public Object get(int index) {
         indexCheck(index);
         return parent.get(index + offset);
     }
@@ -127,5 +170,13 @@ class SubList<T> extends ArrayList<T> {
         if (index < 0 || index >= this.size) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public String toString() {
+        String result = "";
+        for (int i = 0; i < size; i++) {
+            result += elements[i] + " ";
+        }
+        return "List { " + result + "}";
     }
 }
