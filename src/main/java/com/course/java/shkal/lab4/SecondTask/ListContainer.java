@@ -1,5 +1,6 @@
 package com.course.java.shkal.lab4.SecondTask;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,25 +15,53 @@ public class ListContainer<T> {
         elements = new Object[DEFAULT_CAPACITY];
     }
 
-    public ListContainer(T... elements) {
-        for (int i = 0; i < elements.length; i++) {
-            elements[i] = elements[i];
+    public ListContainer(T... values) {
+        elements = new Object[values.length];
+        for (int i = 0; i < values.length; i++) {
+            elements[i] = values[i];
+            index++;
         }
+        size = index;
     }
 
-//    public List<T> get(int index) {
-//        indexCheck(index);
-//        return  elements[]
-//    }
+    public T get(int index) {
+        indexCheck(index);
+        return (T) elements[index];
+    }
 
-    public boolean add(List list) {
-        if (elements.length == index) {
-            elements = (T[]) new Object[size * 2];
+    public int get(T t) {
+        for (int i = 0; i < size; i++) {
+            if (elements[i] == t)
+                return i;
+        }
+        return -1;
+    }
+
+    public boolean add(T t) {
+        if (elements.length  == index) {
+            Object[] temp = new Object[size * 2];
+
+            for (int i = 0; i < size; i++) {
+                temp[i] = elements[i];
+            }
+
+            elements = temp;
         }
 
-        elements[index] = (T) list;
+        elements[index] = t;
         index++;
         size++;
+        return true;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public boolean addAll(ListContainer list) {
+        for (int i = 0; i < list.size(); i ++){
+            this.add((T) list.get(i));
+        }
         return true;
     }
 
@@ -42,14 +71,23 @@ public class ListContainer<T> {
         }
     }
 
-    public String getAll() {
-        String result = "";
+    public boolean remove(int index) {
+        indexCheck(index);
 
-        for (int i = 0; i < size; i++) {
-            result += this.elements[i] + "\n";
+        Object[] temp = new Object[elements.length];
+        for (int i = 0, k = 0; i < size; i++, k++) {
+
+            if (index == i) {
+                k--;
+            } else {
+                temp[k] = elements[i];
+            }
         }
 
-        return "List = {" + result + "}";
+        elements = temp;
+        size--;
+        this.index--;
+        return true;
     }
 
     public boolean compareTo(ListContainer<T> listContainer) {
@@ -66,6 +104,15 @@ public class ListContainer<T> {
         return true;
     }
 
+    public ListContainer<T> subList(int firstIndex, int lastIndex) {
+        indexCheck(firstIndex);
+        indexCheck(lastIndex);
+
+        SubList<T> temp = new SubList<T>(this, 0, firstIndex, lastIndex);
+        return temp;
+    }
+
+    @Override
     public String toString() {
         String result = "";
         for (int i = 0; i < size; i++) {
@@ -74,11 +121,67 @@ public class ListContainer<T> {
         return "List { " + result + "}";
     }
 
-    public int hashCode() {
-        return Objects.hash((Object) elements);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ListContainer<?> arrayList = (ListContainer<?>) o;
+        if (size == arrayList.size) {
+            for (int i = 0; i < size; i++) {
+                if (!elements.equals(arrayList.elements)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
-    public boolean equals(Object o) {
-        return false;
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(size);
+        result = 31 * result + Arrays.hashCode(elements);
+        return result;
+    }
+}
+
+class SubList<T> extends ListContainer {
+    Object[] elements;
+    private ListContainer parent;
+    private int offset;
+    int size;
+
+    SubList(ListContainer parent, int offset, int fromIndex, int toIndex) {
+        this.parent = parent;
+        this.offset = offset + fromIndex;
+        this.size = toIndex - fromIndex;
+
+        elements = new Object[toIndex - fromIndex];
+        for (int i = fromIndex, k = 0; i < toIndex; i++, k++) {
+            elements[k] = parent.get(i);
+        }
+    }
+
+    public Object get(int index) {
+        indexCheck(index);
+        return parent.get(index + offset);
+    }
+
+    public int size() {
+        return this.size;
+    }
+
+    private void indexCheck(int index) {
+        if (index < 0 || index >= this.size) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public String toString() {
+        String result = "";
+        for (int i = 0; i < size; i++) {
+            result += elements[i] + " ";
+        }
+        return "List { " + result + "}";
     }
 }
