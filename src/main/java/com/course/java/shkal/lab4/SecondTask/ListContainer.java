@@ -1,7 +1,6 @@
 package com.course.java.shkal.lab4.SecondTask;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 public class ListContainer<T> {
